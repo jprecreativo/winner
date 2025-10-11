@@ -6,7 +6,7 @@ async function main() {
   // The first account in your `accounts` array in the config is used by default.
   const [deployer] = await ethers.getSigners();
 
-  console.log("Deploying contract with the account:", deployer.address);
+  console.log("Deploying with the account:", deployer.address);
 
   // Get the ContractFactory and deploy
   const Contract = await ethers.getContractFactory("Contract");
@@ -17,7 +17,16 @@ async function main() {
   // In ethers v6, the address is a getter property
   console.log("Contract deployed to:", contract.target);
 
-  await contract.attempt();
+  // await contract.attempt();
+
+  const Middleware = await ethers.getContractFactory("Middleware");
+  const middleware = await Middleware.deploy();
+
+  await middleware.waitForDeployment();
+
+  console.log("Middleware deployed to:", middleware.target);
+
+  await middleware.attempt(contract.target);
 }
 
 main()
